@@ -1,0 +1,14 @@
+## Interface: 20400
+
+## Title: Money Trail
+## Notes: Shows a money overview for your current realm in the tooltip on the money in your bags
+
+## Author: Ammo
+
+## SavedVariables: MoneyTrailDB
+
+## OptionalDeps: Combuctor, Baggins, OneBag
+
+MoneyTrail.lua
+
+
