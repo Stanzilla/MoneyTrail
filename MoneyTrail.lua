@@ -46,9 +46,9 @@ local function MoneyString( money, color )
 	local silver = abs(mod(money / 100, 100))
 	local copper = abs(mod(money, 100))
 	
-	if money > 10000 then
+	if money >= 10000 then
 		return string.format( "%s%d|r|cffffd700g|r %s%d|r|cffc7c7cfs|r %s%d|r|cffeda55fc|r", color, gold, color, silver, color, copper)
-	elseif money > 100 then
+	elseif money >= 100 then
 		return string.format( "%s%d|r|cffc7c7cfs|r %s%d|r|cffeda55fc|r", color, silver, color, copper)	
 	else 
 		return string.format("%s%d|r|cffeda55fc|r", color, copper )
