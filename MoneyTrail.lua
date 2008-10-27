@@ -176,6 +176,8 @@ function HookDisplays()
 		["FBoH_BagViewFrame_2_GoldFrame"] = true, -- FBoH
 		["BagnonMoney0"] = true, -- Bagnon
 		["BagnonMoney1"] = true, -- Bagnon
+		["cb_mainMoney"] = true, -- cargBags
+		["cb_bankMoney"] = true, -- cargBags Bank		
 	}
 	for frame, multiple in pairs(BagFrames) do
 		if _G[frame] then
