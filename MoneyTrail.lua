@@ -6,6 +6,8 @@ local playerClass = select(2, UnitClass("player"))
 local data -- will contain the data we work with 
 local displays = {} -- all our displays
 local HookDisplays -- func defined later
+local LDB = LibStub and LibStub("LibDataBroker-1.1", true)
+local LDBObj
 
 -- localization
 
@@ -69,6 +71,7 @@ local function UpdateData()
 		end
 		data.diff = data.gained - data.spent
 		data.money = money
+		if LDBObj then LDBObj.text = MoneyString(money) end
 	end
 end
 
@@ -92,6 +95,7 @@ function addon:ADDON_LOADED(event, name)
 		data.spent = 0
 		data.gained = 0
 		data.diff = 0
+		if LDBObj then LDBObj.text = MoneyString(data.money) end
 	end
 end
 
@@ -120,36 +124,38 @@ addon:RegisterEvent("PLAYER_MONEY")
 addon:RegisterEvent("PLAYER_ENTERING_WORLD")
 addon:SetScript("OnEvent", OnEvent)
 
-
--- get our display set up
-local function OnEnter(self)
+local function UpdateTooltip(tooltip)
 	UpdateData()
 	
-	GameTooltip:SetOwner(self.MoneyTrailAnchor and self.MoneyTrailAnchor or self, 'ANCHOR_TOPRIGHT')
-	
-	GameTooltip:AddLine("Money Trail")
+	tooltip:AddLine("Money Trail")
 	
 	if data.gained > 0 or data.spent > 0 then
-		GameTooltip:AddLine(" ")
-		GameTooltip:AddLine(L.thissession)
-		GameTooltip:AddDoubleLine(L.gained, MoneyString(data.gained, "|cff00ff00"))
-		GameTooltip:AddDoubleLine(L.spent, MoneyString(data.spent, "|cffff0000"))
+		tooltip:AddLine(" ")
+		tooltip:AddLine(L.thissession)
+		tooltip:AddDoubleLine(L.gained, MoneyString(data.gained, "|cff00ff00"))
+		tooltip:AddDoubleLine(L.spent, MoneyString(data.spent, "|cffff0000"))
 		if data.diff > 0 then
-			GameTooltip:AddDoubleLine(L.profit,MoneyString(data.diff, "|cff00ff00"))
+			tooltip:AddDoubleLine(L.profit,MoneyString(data.diff, "|cff00ff00"))
 		else
-			GameTooltip:AddDoubleLine(L.loss,MoneyString(-1*data.diff, "|cffff0000"))
+			tooltip:AddDoubleLine(L.loss,MoneyString(-1*data.diff, "|cffff0000"))
 		end	
 	end
 	
-	GameTooltip:AddLine(" ")
+	tooltip:AddLine(" ")
 	local total = 0
 	for pn, d in pairs(MoneyTrailDB[realmName]) do
 		total = total + d.money
-		GameTooltip:AddDoubleLine(coloredNames[pn], MoneyString(d.money))
+		tooltip:AddDoubleLine(coloredNames[pn], MoneyString(d.money))
 	end
-	GameTooltip:AddLine(" ")
-	GameTooltip:AddDoubleLine(L.total, MoneyString(total))
-	
+	tooltip:AddLine(" ")
+	tooltip:AddDoubleLine(L.total, MoneyString(total))
+end
+
+
+local function OnEnter(self)
+	-- get our display set up
+	GameTooltip:SetOwner(self.MoneyTrailAnchor and self.MoneyTrailAnchor or self, 'ANCHOR_TOPRIGHT')
+	UpdateTooltip(GameTooltip)
 	GameTooltip:Show()
 end
 
@@ -202,4 +208,14 @@ function HookDisplays()
 		if frame:GetScript("OnLeave") then frame:HookScript("OnLeave", OnLeave)
 		else frame:SetScript("OnLeave", OnLeave) end
 	end
+end
+
+-- LDB Plugin
+if LDB then
+	LDBObj = LDB:NewDataObject("MoneyTrail", {
+		type = "data source",
+		label = "MoneyTrail",
+		text = "0",
+		OnTooltipShow = UpdateTooltip,
+	})
 end
