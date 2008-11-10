@@ -43,6 +43,7 @@ local coloredNames = setmetatable({}, {__index =
 })
 
 local function MoneyString( money, color )
+	if not type(money) == "number" then money = 0 end
 	if not color then color = "|cffffffff" end
 	local gold = abs(money / 10000)
 	local silver = abs(mod(money / 100, 100))
