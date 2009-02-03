@@ -2,14 +2,8 @@
 
 ## Title: Money Trail
 ## Notes: Shows a money overview for your current realm in the tooltip on the money in your bags
-## Notes-koKR: 가방 속의 금전 위에 나타나는 툴팁에 현재 서버의 금전을 요약하여 보여줍니다.
 
 ## Author: Ammo
-
-## X-Category: Tooltips, Inventory
-## X-Website: http://www.wowace.com/projects/money-trail/
-## X-Feedback: http://www.wowace.com/projects/money-trail/tickets/
-## X-Localizations: enUS, koKR
 
 ## SavedVariables: MoneyTrailDB
 
