@@ -1,4 +1,6 @@
 
+MONEYTRAIL = {Locals = {}}
+
 -- locals
 local realmName = GetRealmName()
 local playerName = UnitName("player")
@@ -8,17 +10,29 @@ local displays = {} -- all our displays
 local HookDisplays -- func defined later
 local LDB = LibStub and LibStub("LibDataBroker-1.1", true)
 local LDBObj
+local L = MONEYTRAIL.Locals
 
 -- localization
 
-local L = {
-	total = "Total",
-	gained = "|cffffffffGained|r",
-	spent = "|cffffffffSpent|r",
-	loss = "|cffffffffLoss|r",
-	profit = "|cffffffffProfit|r",
-	thissession = "This session"
-}
+-- English  (default)
+if GetLocale() then
+	L.total = "Total"
+	L.gained = "|cffffffffGained|r"
+	L.spent = "|cffffffffSpent|r"
+	L.loss = "|cffffffffLoss|r"
+	L.profit = "|cffffffffProfit|r"
+	L.thissession = "This session"
+end
+
+-- Korean
+if GetLocale() == "koKR" then
+	L.total = "총"
+	L.gained = "|cffffffff수입|r"
+	L.spent = "|cffffffff소비|r"
+	L.loss = "|cffffffff손실|r"
+	L.profit = "|cffffffff이익|r"
+	L.thissession = "현재 세션"
+end
 
 -- local funcs
 
