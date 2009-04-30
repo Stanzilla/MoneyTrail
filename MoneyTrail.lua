@@ -75,7 +75,7 @@ end
 -- the most important func
 local function UpdateData()
 	local money = GetMoney()
-	if money ~= data.money then
+	if money and money ~= data.money then
 		if not data.money then data.money = money end
 		-- money changed calculate that shit
 		local diff = money - data.money
