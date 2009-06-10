@@ -57,7 +57,7 @@ local coloredNames = setmetatable({}, {__index =
 })
 
 local function MoneyString( money, color )
-	if not type(money) == "number" then money = 0 end
+	if type(money) ~= "number" then money = 0 end
 	if not color then color = "|cffffffff" end
 	local gold = abs(money / 10000)
 	local silver = abs(mod(money / 100, 100))
@@ -198,7 +198,7 @@ function HookDisplays()
 		["BagnonMoney0"] = true, -- Bagnon
 		["BagnonMoney1"] = true, -- Bagnon
 		["cb_mainMoney"] = true, -- cargBags
-		["cb_bankMoney"] = true, -- cargBags Bank		
+		["cb_bankMoney"] = true, -- cargBags Bank
 	}
 	for frame, multiple in pairs(BagFrames) do
 		if _G[frame] then
