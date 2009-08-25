@@ -197,9 +197,14 @@ function HookDisplays()
 		["FBoH_BagViewFrame_2_GoldFrame"] = true, -- FBoH
 		["BagnonMoney0"] = true, -- Bagnon
 		["BagnonMoney1"] = true, -- Bagnon
-		["cb_mainMoney"] = true, -- cargBags
-		["cb_bankMoney"] = true, -- cargBags Bank
 	}
+	if cargBags then
+		for _, object in pairs(cargBags.Objects) do
+			if object.Money then
+				BagFrames[object.Money:GetName()] = true
+			end
+		end
+	end
 	for frame, multiple in pairs(BagFrames) do
 		if _G[frame] then
 			table.insert(displays, _G[frame])
