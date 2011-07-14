@@ -32,6 +32,20 @@ if GetLocale() == "koKR" then
 	L.loss = "|cffffffff손실|r"
 	L.profit = "|cffffffff이익|r"
 	L.thissession = "현재 세션"
+elseif GetLocale() == "zhCN" then
+	L.total = "总计"
+	L.gained = "|cffffffff获取|r"
+	L.spent = "|cffffffff花费|r"
+	L.loss = "|cffffffff失去|r"
+	L.profit = "|cffffffff共计|r"
+	L.thissession = "本次连接"
+elseif GetLocale() == "zhTW" then
+	L.total = "總計"
+	L.gained = "|cffffffff獲取|r"
+	L.spent = "|cffffffff花費|r"
+	L.loss = "|cffffffff失去|r"
+	L.profit = "|cffffffff共計|r"
+	L.thissession = "本次連接"
 end
 
 -- local funcs
