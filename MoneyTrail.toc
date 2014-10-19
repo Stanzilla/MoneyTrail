@@ -7,7 +7,7 @@
 
 ## SavedVariables: MoneyTrailDB
 
-## OptionalDeps: Combuctor, Baggins, OneBag, cargBags, ArkInventory, BaudBag, FBagOfHolding, Bagnon
+## OptionalDeps: Combuctor, Baggins, OneBag, cargBags, ArkInventory, BaudBag, FBagOfHolding, Inventorian, Bagnon
 
 MoneyTrail.lua
 

@@ -208,9 +208,9 @@ function HookDisplays()
 		["BBCont1_1MoneyFrame"] = true, -- BaudBag bag
 		["BBCont2_1MoneyFrame"] = true, -- BaudBag bank
 		["FBoH_BagViewFrame_1_GoldFrame"] = true, -- FBoH
-		["FBoH_BagViewFrame_2_GoldFrame"] = true, -- FBoH
-		["BagnonMoney0"] = true, -- Bagnon
-		["BagnonMoney1"] = true, -- Bagnon
+		["FBoH_BagViewFrame_2_GoldFrame"] = true, -- FBoH		
+		["BagnonFrameinventoryMoneyFrameClick"] = true, -- Bagnon
+		["InventorianBagFrameMoneyFrame"] = true, -- Inventorian
 	}
 	if cargBags then
 		for _, object in pairs(cargBags.Objects) do
@@ -250,6 +250,7 @@ if LDB then
 		type = "data source",
 		label = "MoneyTrail",
 		text = "0",
+		icon = "Interface\\Icons\\inv_misc_coin_01",
 		OnTooltipShow = UpdateTooltip,
 	})
 end
