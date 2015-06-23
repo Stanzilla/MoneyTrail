@@ -1,4 +1,4 @@
-## Interface: 60100
+## Interface: 60200
 ## Title: Money Trail
 ## Notes: Shows a money overview for your current realm in the tooltip on the money in your bags
 ## Author: Ammo
