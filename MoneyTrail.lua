@@ -1,16 +1,18 @@
-
+--luacheck: globals MONEYTRAIL MoneyTrailDB cargBags
 MONEYTRAIL = {Locals = {}}
 
 -- locals
 local realmName = GetRealmName()
+local realmNames = GetAutoCompleteRealms()
 local playerName = UnitName("player")
 local playerClass = select(2, UnitClass("player"))
-local data -- will contain the data we work with 
+local data -- will contain the data we work with
 local displays = {} -- all our displays
 local HookDisplays -- func defined later
 local LDB = LibStub and LibStub("LibDataBroker-1.1", true)
 local LDBObj
 local L = MONEYTRAIL.Locals
+local show_realm_names = false
 
 -- localization
 
@@ -53,22 +55,21 @@ end
 local classColors = {
 	WTF = "|cffa0a0a0"
 }
+
 for k, v in pairs(RAID_CLASS_COLORS) do
 	classColors[k] = "|cff" .. string.format("%02x%02x%02x", v.r * 255, v.g * 255, v.b * 255)
 end
 
-local coloredNames = setmetatable({}, {__index =
-	function(self, key)
-		if type(key) == "nil" then return nil end
-		local class = MoneyTrailDB[realmName][key] and MoneyTrailDB[realmName][key].class
-		if class then
-			self[key] = classColors[class]  .. key .. "|r"
-			return self[key]
-		else
-			return classColors.WTF .. key .. "|r"
-		end
+local function coloredNames( charName, realmName )
+	if not charName then return nil end
+	local class = MoneyTrailDB[realmName][charName] and MoneyTrailDB[realmName][charName].class
+	if class then
+		charName = classColors[class]  .. charName .. "|r"
+		return charName
+	else
+		return classColors.WTF .. charName .. "|r"
 	end
-})
+end
 
 local function MoneyString( money, color )
 	if type(money) ~= "number" then money = 0 end
@@ -76,12 +77,12 @@ local function MoneyString( money, color )
 	local gold = abs(money / 10000)
 	local silver = abs(mod(money / 100, 100))
 	local copper = abs(mod(money, 100))
-	
+
 	if money >= 10000 then
 		return string.format( "%s%d|r|cffffd700g|r %s%d|r|cffc7c7cfs|r %s%d|r|cffeda55fc|r", color, gold, color, silver, color, copper)
 	elseif money >= 100 then
-		return string.format( "%s%d|r|cffc7c7cfs|r %s%d|r|cffeda55fc|r", color, silver, color, copper)	
-	else 
+		return string.format( "%s%d|r|cffc7c7cfs|r %s%d|r|cffeda55fc|r", color, silver, color, copper)
+	else
 		return string.format("%s%d|r|cffeda55fc|r", color, copper )
 	end
 end
@@ -155,9 +156,9 @@ addon:SetScript("OnEvent", OnEvent)
 
 local function UpdateTooltip(tooltip)
 	UpdateData()
-	
+
 	tooltip:AddLine("Money Trail")
-	
+
 	if data.gained > 0 or data.spent > 0 then
 		tooltip:AddLine(" ")
 		tooltip:AddLine(L.thissession)
@@ -167,15 +168,38 @@ local function UpdateTooltip(tooltip)
 			tooltip:AddDoubleLine(L.profit,MoneyString(data.diff, "|cff00ff00"))
 		else
 			tooltip:AddDoubleLine(L.loss,MoneyString(-1*data.diff, "|cffff0000"))
-		end	
+		end
 	end
-	
+
 	tooltip:AddLine(" ")
 	local total = 0
-	for pn, d in pairs(MoneyTrailDB[realmName]) do
-		total = total + d.money
-		tooltip:AddDoubleLine(coloredNames[pn], MoneyString(d.money))
+
+	if next(realmNames) then
+		for k, _ in pairs(MoneyTrailDB) do
+			local fk = string.gsub(k:gsub("-", ""), "%s", "")
+
+			for _, v in pairs(realmNames) do
+				if fk == v then
+					if MoneyTrailDB[k] then
+						for pn, d in pairs(MoneyTrailDB[k]) do
+							total = total + d.money
+							if show_realm_names then
+								tooltip:AddDoubleLine(coloredNames(pn, k).."-"..v, MoneyString(d.money))
+							else
+								tooltip:AddDoubleLine(coloredNames(pn, k), MoneyString(d.money))
+							end
+						end
+					end
+				end
+			end
+		end
+	else
+		for pn, d in pairs(MoneyTrailDB[realmName]) do
+			total = total + d.money
+			tooltip:AddDoubleLine(coloredNames(pn, realmName), MoneyString(d.money))
+		end
 	end
+
 	tooltip:AddLine(" ")
 	tooltip:AddDoubleLine(L.total, MoneyString(total))
 end
@@ -208,7 +232,7 @@ function HookDisplays()
 		["BBCont1_1MoneyFrame"] = true, -- BaudBag bag
 		["BBCont2_1MoneyFrame"] = true, -- BaudBag bank
 		["FBoH_BagViewFrame_1_GoldFrame"] = true, -- FBoH
-		["FBoH_BagViewFrame_2_GoldFrame"] = true, -- FBoH		
+		["FBoH_BagViewFrame_2_GoldFrame"] = true, -- FBoH
 		["BagnonFrameinventoryMoneyFrameClick"] = true, -- Bagnon
 		["InventorianBagFrameMoneyFrame"] = true, -- Inventorian
 	}
@@ -225,7 +249,7 @@ function HookDisplays()
 			if multiple then
 				table.insert(displays, _G[frame.."CopperButton"])
 				table.insert(displays, _G[frame.."SilverButton"])
-				table.insert(displays, _G[frame.."GoldButton"])	
+				table.insert(displays, _G[frame.."GoldButton"])
 				_G[frame.."CopperButton"].MoneyTrailAnchor = _G[frame]
 				_G[frame.."SilverButton"].MoneyTrailAnchor = _G[frame]
 				_G[frame.."GoldButton"].MoneyTrailAnchor = _G[frame]
@@ -238,7 +262,7 @@ function HookDisplays()
 		frame:EnableMouse(true)
 		if frame:GetScript("OnEnter") then frame:HookScript("OnEnter", OnEnter)
 		else frame:SetScript("OnEnter", OnEnter) end
-		
+
 		if frame:GetScript("OnLeave") then frame:HookScript("OnLeave", OnLeave)
 		else frame:SetScript("OnLeave", OnLeave) end
 	end
